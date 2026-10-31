@@ -110,7 +110,7 @@ So `login.sbi.co.in.secure-verify.click` belongs to the owner of `secure-verify.
 | **Homoglyph / IDN** | `pаypal.com` with a Cyrillic "а", written in the browser as `xn--pypal-4ve.com` (punycode) | Decode punycode, map look-alike characters to a "skeleton", compare with brands; flag mixed scripts |
 | **Brand plus keyword** | `hdfcbank-kyc-update.in`, `sbi-rewards.com` | Brand name in a domain the brand doesn't own, especially with action words (kyc, verify, login, reward) |
 | **Embedded official domain** | `sbi.co.in.secure-login.click` | The official domain appears as a subdomain of someone else's domain |
-| **Abused TLDs / free hosting** | `.xyz`, `.top`, `.click`; `*.vercel.app`, `*.ngrok.io` combined with a brand | Contextual signals that only count alongside a real indicator |
+| **Abused TLDs / free hosting** | `.xyz`, `.top`, `.click`; `*.vercel.app`, `*.ngrok.io` combined with a brand | Weak or contextual signals on their own; free hosting becomes strong when combined with a brand name |
 
 **Punycode.** Domain names were originally ASCII only. To allow Hindi, Cyrillic and other scripts, browsers encode them as `xn--…` (punycode). That is legitimate, but it also lets attackers use characters that *look* Latin and aren't.
 
@@ -296,7 +296,23 @@ The score combines the weights like independent pieces of evidence:
 score = 1 − (1 − w₁) × (1 − w₂) × (1 − w₃) …      shown as 0–100
 ```
 
-**Example.** Two signals with weights 0.6 and 0.35 give 1 − (0.4 × 0.65) = 0.74, so **74/100**.
+**Real example.** The engine's breakdown for `http://sbi.co.in.secure-login.click/kyc`:
+
+| Signal | Strength | Weight |
+| --- | --- | --- |
+| Official domain embedded in a subdomain | strong | 0.60 |
+| Abused TLD (`.click`) | weak | 0.12 |
+| Sensitive words (`login`) | contextual | 0.15 |
+| No HTTPS | contextual | 0.12 |
+
+1 − (0.40 × 0.88 × 0.85 × 0.88) = 0.737, so the score is **74/100**. It has one strong signal and a score of 60 or more, so the verdict is **likely phishing**.
+
+Contextual signals count here only because a real indicator is present:
+
+| URL | Score | Verdict | Why |
+| --- | --- | --- | --- |
+| `http://example.com/login/verify` | 0 | No known threats | HTTP and "login" are contextual only, and there is no real indicator |
+| `http://shop.xyz/login` | 34 | Suspicious | The weak `.xyz` signal unlocks the contextual ones. That earns a badge, not a warning page. |
 
 **Why this formula:**
 
@@ -319,7 +335,7 @@ score = 1 − (1 − w₁) × (1 − w₂) × (1 − w₃) …      shown as 0�
 **Rules that keep verdicts honest:**
 
 1. **We never say "safe".** Absence of evidence isn't evidence of safety.
-2. **Contextual signals never stand alone.** HTTP, long URLs, "login" in the path, `.xyz` and similar only count when something real is also present. An ordinary site on `.xyz` won't be flagged.
+2. **Contextual signals never stand alone.** HTTP, long URLs and "login" in the path only count when something real is also present. An abused TLD like `.xyz` is a *weak* signal (0.12). On its own it stays well under the "suspicious" line of 30.
 3. **Only verified intel can confirm.** Heuristics and AI can never produce "confirmed malicious".
 4. **AI can only add risk, capped at 0.30 total weight.** It can never lower a verdict.
 5. **Every result lists its limitations**, for example "Only the web address was checked", "Reputation services could not be reached", or "VirusTotal has never seen this file. That is not a clean result."
