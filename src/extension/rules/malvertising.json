@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "requestDomains": [
+        "ad-maven.com",
+        "adcash.com",
+        "admaven.com",
+        "adspyglass.com",
+        "adsterra.com",
+        "bidvertiser.com",
+        "clickadu.com",
+        "clickaine.com",
+        "evadav.com",
+        "exoclick.com",
+        "exosrv.com",
+        "galaksion.com",
+        "hilltopads.com",
+        "hilltopads.net",
+        "juicyads.com",
+        "monetag.com",
+        "onclickads.net",
+        "onclkds.com",
+        "popads.net",
+        "popcash.net",
+        "popmyads.com",
+        "propellerads.com",
+        "propellerclick.com",
+        "pushground.com",
+        "revenuehits.com",
+        "richads.com",
+        "trafficstars.com",
+        "tsyndicate.com",
+        "zeropark.com"
+      ],
+      "domainType": "thirdParty",
+      "resourceTypes": [
+        "sub_frame",
+        "script",
+        "image",
+        "stylesheet",
+        "font",
+        "xmlhttprequest",
+        "media",
+        "websocket",
+        "ping",
+        "object",
+        "other"
+      ]
+    }
+  }
+]

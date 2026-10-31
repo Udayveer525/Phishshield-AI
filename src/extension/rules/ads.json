@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "requestDomains": [
+        "3lift.com",
+        "adform.net",
+        "adnxs.com",
+        "adservice.google.com",
+        "adsrvr.org",
+        "amazon-adsystem.com",
+        "bidswitch.net",
+        "casalemedia.com",
+        "criteo.com",
+        "criteo.net",
+        "doubleclick.net",
+        "google-analytics.com",
+        "googleadservices.com",
+        "googlesyndication.com",
+        "hotjar.com",
+        "media.net",
+        "mgid.com",
+        "moatads.com",
+        "openx.net",
+        "outbrain.com",
+        "pubmatic.com",
+        "quantserve.com",
+        "revcontent.com",
+        "rubiconproject.com",
+        "scorecardresearch.com",
+        "sharethrough.com",
+        "smartadserver.com",
+        "taboola.com",
+        "teads.tv",
+        "yieldmo.com",
+        "zedo.com"
+      ],
+      "domainType": "thirdParty",
+      "resourceTypes": [
+        "sub_frame",
+        "script",
+        "image",
+        "stylesheet",
+        "font",
+        "xmlhttprequest",
+        "media",
+        "websocket",
+        "ping",
+        "object",
+        "other"
+      ]
+    }
+  }
+]

@@ -1,0 +1,7 @@
+.d-file { margin-top: 10px; display: grid; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+.d-file .row { display: flex; gap: 10px; }
+.d-file .k { color: var(--muted); min-width: 92px; }
+.d-file .v { font-family: var(--mono); overflow-wrap: anywhere; }
+.d-status { margin-top: 18px; padding: 10px 12px; border-radius: 8px; background: var(--surface-2); color: var(--text-2); font-size: 13px; }
+.d-status.done { border-left: 3px solid var(--brand); }
+.btn.danger { padding: 10px 18px; font-size: 14.5px; }

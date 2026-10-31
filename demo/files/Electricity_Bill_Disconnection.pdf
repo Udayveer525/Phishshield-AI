@@ -1,0 +1,5 @@
+%PDF-1.7
+1 0 obj << /Type /Catalog /OpenAction 2 0 R >> endobj
+2 0 obj << /S /JavaScript /JS (app.alert("PhishShield demo")) >> endobj
+3 0 obj << /Type /Annot /Subtype /Link /A << /S /URI /URI (http://bescom-bill-update.xyz/pay) >> >> endobj
+%%EOF

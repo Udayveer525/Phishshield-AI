@@ -1,0 +1,4 @@
+* text=auto eol=lf
+demo/files/** binary
+*.png binary
+*.apk binary

@@ -1,0 +1,21 @@
+.opt { max-width: 720px; margin: 0 auto; padding: 32px 16px 60px; }
+.opt-head { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+.opt-head .mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 9px; background: #0e7490; color: #fff; }
+.opt-head h1 { font-size: 20px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 14px; }
+.card h2 { font-size: 15px; margin-bottom: 4px; }
+.card > p { color: var(--text-2); font-size: 13px; }
+.setting { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 12px 0; border-top: 1px solid var(--border); }
+.setting:first-of-type { margin-top: 10px; }
+.setting .lbl { font-weight: 600; }
+.setting .desc { color: var(--muted); font-size: 12.5px; margin-top: 2px; max-width: 460px; }
+.setting .ctl { flex: none; display: flex; gap: 8px; align-items: center; }
+.setting .ctl .input { width: 240px; }
+.status { font-size: 12.5px; margin-top: 8px; }
+.status.ok { color: var(--brand); }
+.status.bad { color: var(--v-bad); }
+.prov { font-size: 12.5px; margin-top: 4px; color: var(--text-2); }
+.trusted { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; }
+.trusted li { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--surface-2); border-radius: 6px; font-family: var(--mono); font-size: 12.5px; }
+.privacy li { margin: 6px 0; color: var(--text-2); font-size: 13px; }
+@media (max-width: 560px) { .setting { flex-direction: column; } .setting .ctl .input { width: 100%; } }
