@@ -1,0 +1,167 @@
+/* PhishShield AI — Test Range demo site. Local, inert, clearly labelled. */
+:root {
+  --bg: #f4f5f7;
+  --card: #ffffff;
+  --ink: #1c1917;
+  --muted: #57534e;
+  --line: #e7e5e4;
+  --brand: #0e7490;
+  --brand-ink: #083344;
+  --warn: #b45309;
+  --danger: #b91c1c;
+  --ok: #047857;
+  --radius: 14px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+a { color: var(--brand); }
+
+/* Persistent demo banner — this is never a real site. */
+.demo-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: repeating-linear-gradient(135deg, #fde68a, #fde68a 14px, #fcd34d 14px, #fcd34d 28px);
+  color: #422006;
+  font-size: 13px;
+  font-weight: 650;
+  text-align: center;
+  padding: 7px 16px;
+  border-bottom: 1px solid #d97706;
+}
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
+
+header.hero {
+  background: linear-gradient(135deg, #0e7490, #155e75);
+  color: #ecfeff;
+  padding: 34px 0 30px;
+}
+header.hero .wrap { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.logo {
+  width: 46px; height: 46px; flex: none;
+  display: grid; place-items: center;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 12px; font-size: 24px;
+}
+header.hero h1 { margin: 0; font-size: 26px; letter-spacing: -0.01em; }
+header.hero p { margin: 2px 0 0; color: #a5f3fc; font-size: 14px; }
+
+nav.toc {
+  position: sticky; top: 33px; z-index: 40;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+}
+nav.toc .wrap { display: flex; gap: 6px; overflow-x: auto; padding: 8px 16px; }
+nav.toc a {
+  flex: none; text-decoration: none; color: var(--muted);
+  font-size: 13px; font-weight: 600;
+  padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line);
+  background: #fff; white-space: nowrap;
+}
+nav.toc a:hover { color: var(--brand-ink); border-color: var(--brand); }
+
+main { padding: 26px 0 60px; }
+section { margin: 0 0 30px; scroll-margin-top: 90px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+}
+.card + .card { margin-top: 16px; }
+h2 { font-size: 20px; margin: 0 0 4px; letter-spacing: -0.01em; }
+h2 .num {
+  display: inline-grid; place-items: center;
+  width: 26px; height: 26px; margin-right: 8px; vertical-align: -5px;
+  background: var(--brand); color: #fff; border-radius: 8px; font-size: 14px;
+}
+.lead { color: var(--muted); margin: 0 0 14px; }
+.watch {
+  background: #ecfeff; border: 1px solid #a5f3fc; color: var(--brand-ink);
+  border-radius: 10px; padding: 10px 13px; font-size: 14px; margin: 14px 0 0;
+}
+.watch b { color: var(--brand); }
+
+ul.steps { margin: 10px 0 0; padding-left: 20px; }
+ul.steps li { margin: 4px 0; }
+.pill {
+  display: inline-block; background: #f1f5f9; border: 1px solid var(--line);
+  border-radius: 6px; padding: 1px 7px; font-size: 13px; font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font: inherit; font-weight: 600; font-size: 15px;
+  padding: 9px 16px; border-radius: 10px; cursor: pointer;
+  border: 1px solid var(--brand); background: var(--brand); color: #fff;
+  text-decoration: none;
+}
+.btn:hover { filter: brightness(1.05); }
+.btn.ghost { background: #fff; color: var(--brand); }
+.btn.warn { background: var(--warn); border-color: var(--warn); }
+.btn.danger { background: var(--danger); border-color: var(--danger); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+
+/* Mock storefront + ad slots */
+.shop-grid { display: grid; grid-template-columns: 1fr 300px; gap: 18px; }
+.shop-grid > div, .shop-grid > aside { min-width: 0; }
+@media (max-width: 720px) { .shop-grid { grid-template-columns: 1fr; } }
+.ad-wrapper iframe, .ad-wrapper ins { max-width: 100%; }
+.product { display: flex; gap: 16px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.product .thumb { width: 84px; height: 84px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #ea580c); flex: none; }
+.product h3 { margin: 0 0 2px; font-size: 17px; }
+.product .price { font-weight: 700; color: var(--ok); }
+.product .mrp { color: var(--muted); text-decoration: line-through; font-size: 14px; margin-left: 6px; }
+
+/* An ad slot is the site's reserved space. Blocking empties it; "Hide empty ad spaces" collapses it. */
+.ad-wrapper {
+  position: relative;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background: repeating-linear-gradient(45deg, #f8fafc, #f8fafc 10px, #f1f5f9 10px, #f1f5f9 20px);
+  display: grid; place-items: center;
+  color: #94a3b8; font-size: 13px;
+  overflow: hidden;
+}
+.ad-label {
+  position: absolute; top: 6px; left: 8px;
+  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8;
+}
+.ad-lead { min-height: 92px; margin-bottom: 16px; }
+.ad-box { min-height: 254px; }
+.ad-native { min-height: 150px; margin-top: 16px; }
+
+/* QR station */
+.qr-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+.qr-card { text-align: center; border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: #fff; }
+.qr-card img { width: 176px; height: 176px; image-rendering: pixelated; border-radius: 6px; }
+.qr-card .cap { font-size: 13px; color: var(--muted); margin-top: 8px; max-width: 176px; }
+.qr-card.scam .cap b { color: var(--danger); }
+.qr-card.good .cap b { color: var(--ok); }
+
+/* Inert forms */
+label.field { display: block; margin: 12px 0 0; font-size: 14px; font-weight: 600; }
+label.field input {
+  display: block; width: 100%; margin-top: 5px;
+  font: inherit; padding: 9px 11px; border: 1px solid var(--line); border-radius: 9px; background: #fff;
+}
+.toast {
+  position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+  background: #1c1917; color: #fafaf9; padding: 11px 16px; border-radius: 10px;
+  font-size: 14px; box-shadow: var(--shadow); z-index: 100; max-width: calc(100vw - 32px);
+}
+
+footer { border-top: 1px solid var(--line); padding: 22px 0 46px; color: var(--muted); font-size: 14px; }
+footer b { color: var(--ink); }
+.sos { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.sos span { background: #fef2f2; border: 1px solid #fecaca; color: var(--danger); border-radius: 8px; padding: 5px 10px; font-weight: 600; font-size: 13px; }

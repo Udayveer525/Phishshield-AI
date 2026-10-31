@@ -182,7 +182,7 @@ async function syncGuard(): Promise<void> {
   const existing = new Set((await chrome.scripting.getRegisteredContentScripts({ ids: [GUARD_ID, ADHIDE_ID] })).map((s) => s.id));
   const wanted: chrome.scripting.RegisteredContentScript[] = [];
   if (granted && settings.credentialGuard) wanted.push({ id: GUARD_ID, matches: ALL_SITES, js: ['content/guard.js'], runAt: 'document_idle', allFrames: false, persistAcrossSessions: true });
-  if (granted && settings.blockAds && settings.hideAdSpaces) wanted.push({ id: ADHIDE_ID, matches: ALL_SITES, css: ['content/adhide.css'], runAt: 'document_start', allFrames: true, persistAcrossSessions: true });
+  if (granted && settings.blockAds && settings.hideAdSpaces) wanted.push({ id: ADHIDE_ID, matches: ALL_SITES, css: ['content/adhide.css'], js: ['content/adhide.js'], runAt: 'document_start', allFrames: true, persistAcrossSessions: true });
   const remove = [...existing].filter((id) => !wanted.some((w) => w.id === id));
   if (remove.length) await chrome.scripting.unregisterContentScripts({ ids: remove });
   const add = wanted.filter((w) => !existing.has(w.id));
@@ -303,7 +303,12 @@ async function downloadAction(id: number, action: DownloadAction): Promise<void>
     if (item.state === 'in_progress' && item.paused) await chrome.downloads.resume(id);
     await setDownloadOutcome(id, 'kept');
   } else if (action === 'cancel') {
+    // "Cancel" means the user does not want this file. Cancel it if it is still running, but a small
+    // file often finishes before it can be paused, so also remove any bytes that reached the disk —
+    // otherwise cancelling a finished download would be a silent no-op and the file would stay.
     if (item.state === 'in_progress') await chrome.downloads.cancel(id);
+    const [after] = await chrome.downloads.search({ id });
+    if (after && after.state === 'complete' && after.exists) await chrome.downloads.removeFile(id);
     await setDownloadOutcome(id, 'cancelled');
   } else if (action === 'delete') {
     // Only ever the file this download created, and only when the user clicks "Delete file".

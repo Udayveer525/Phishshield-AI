@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PhishShield Test Range — safe local demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="demo-bar">⚠️ PhishShield Test Range — a safe, local training site. No real accounts, no real payments. Nothing you type or scan here leaves your computer.</div>
+
+    <header class="hero">
+      <div class="wrap">
+        <div class="logo">🛡️</div>
+        <div>
+          <h1>PhishShield Test Range</h1>
+          <p>Every feature of the extension, demonstrated from one place.</p>
+        </div>
+      </div>
+    </header>
+
+    <nav class="toc">
+      <div class="wrap">
+        <a href="#setup">Setup</a>
+        <a href="#shop">1 · Shop &amp; ads</a>
+        <a href="#pay">2 · Scam QR</a>
+        <a href="#login">3 · Fake login</a>
+        <a href="#downloads">4 · Downloads</a>
+        <a href="#links">5 · Phishing links</a>
+        <a href="#scan">6 · Scan tools</a>
+      </div>
+    </nav>
+
+    <main class="wrap">
+      <!-- SETUP ------------------------------------------------------------ -->
+      <section id="setup">
+        <div class="card">
+          <h2>Before you start</h2>
+          <p class="lead">This page is served from <span class="pill">127.0.0.1</span>, so it is treated as a local address — the extension never sends local pages for reputation checks. The stations below still work because they rely on the on-device engine, the ad rules and Download Guard.</p>
+          <p>Load the extension, then open its <b>options</b> and turn on everything you want to show:</p>
+          <ul class="steps">
+            <li><b>Credential Guard</b> — for station 3 (needs one-time site-access permission).</li>
+            <li><b>Block ads and trackers</b> + <b>Hide empty ad spaces</b> — for station 1.</li>
+            <li><b>Download Guard</b> — on by default, for station 4.</li>
+            <li>Keep the API server running (<span class="pill">npm run dev:server</span>) for the file / QR / password / link checks in station 6.</li>
+          </ul>
+          <p class="watch">Tip: after you change an ad or guard setting, use the extension popup's <b>Reload this page to apply</b> button — network rules only affect requests made <i>after</i> they change.</p>
+        </div>
+      </section>
+
+      <!-- 1 · SHOP & ADS --------------------------------------------------- -->
+      <section id="shop">
+        <div class="card">
+          <h2><span class="num">1</span>Storefront &amp; ad shields</h2>
+          <p class="lead">A mock shop, "DesiKart", with three real ad slots. The grey boxes are the space the site reserves for ads. With <b>Block ads and trackers</b> on, those ad requests never load; with <b>Hide empty ad spaces</b> on too, the empty boxes collapse.</p>
+          <div class="shop-grid">
+            <div>
+              <!-- Leaderboard slot (Google Ad Manager) -->
+              <div class="ad-wrapper ad-lead" id="div-gpt-ad-leaderboard">
+                <span class="ad-label">Advertisement</span>
+                <iframe title="ad" width="728" height="90" style="border:0" src="https://securepubads.g.doubleclick.net/gampad/ads?iu=/demo/leaderboard&sz=728x90"></iframe>
+              </div>
+
+              <div class="product">
+                <div class="thumb"></div>
+                <div>
+                  <h3>Wireless Earbuds Pro (Festival Deal)</h3>
+                  <div><span class="price">₹1,299</span><span class="mrp">₹4,999</span></div>
+                  <p style="margin:8px 0 0;color:var(--muted);font-size:14px">Flat 74% off. Offer ends tonight.</p>
+                  <div class="btn-row">
+                    <a class="btn" href="#pay">Proceed to pay →</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Native / recommendation widget (Taboola) -->
+              <div class="ad-wrapper ad-native" id="taboola-below-article">
+                <span class="ad-label">Sponsored</span>
+                <span>Recommended for you</span>
+              </div>
+            </div>
+
+            <aside>
+              <!-- Sidebar slot (AdSense) -->
+              <div class="ad-wrapper ad-box">
+                <span class="ad-label">Advertisement</span>
+                <ins class="adsbygoogle" style="display:block;width:300px;height:250px"></ins>
+              </div>
+            </aside>
+          </div>
+          <p class="watch"><b>Watch for:</b> toggle the two ad settings and reload. The leaderboard, sidebar and "Sponsored" boxes disappear. The popup's counter shows how many requests were blocked on this page.</p>
+        </div>
+      </section>
+
+      <!-- 2 · SCAM QR ------------------------------------------------------ -->
+      <section id="pay">
+        <div class="card">
+          <h2><span class="num">2</span>Checkout — scan to "get your refund"</h2>
+          <p class="lead">Classic UPI trap: you are told to scan a QR to <i>receive</i> a refund, but a pay-QR can only <b>send</b> money. Scan the left QR with the extension and it explains exactly what the code does.</p>
+          <div class="qr-row">
+            <div class="qr-card scam">
+              <img src="../qr/upi-refund-scam.png" alt="Scam refund QR" />
+              <div class="cap">"Scan to receive your ₹4,999 cashback refund." <b>This is the scam.</b></div>
+            </div>
+            <div class="qr-card good">
+              <img src="../qr/upi-shop-normal.png" alt="Normal shop QR" />
+              <div class="cap">An ordinary merchant QR, for contrast. <b>No alarm.</b></div>
+            </div>
+          </div>
+          <ul class="steps">
+            <li>Open the extension → <b>Security Center</b> → <b>Scan QR</b>.</li>
+            <li>Upload <span class="pill">demo/qr/upi-refund-scam.png</span> (or screenshot this screen).</li>
+            <li>Expected: <b>likely phishing</b> — "Says you will receive money, but this QR takes money."</li>
+          </ul>
+          <p class="watch"><b>Watch for:</b> the plain-language line that scanning and entering your UPI PIN would <b>send</b> ₹4,999, not receive it, and the "report at cybercrime.gov.in / 1930" advice.</p>
+        </div>
+      </section>
+
+      <!-- 3 · FAKE LOGIN --------------------------------------------------- -->
+      <section id="login">
+        <div class="card">
+          <h2><span class="num">3</span>Fake bank login — Credential Guard</h2>
+          <p class="lead">This opens a page that calls itself a bank but is not on an official bank domain. When you tap into the password or OTP box, Credential Guard warns you before you type.</p>
+          <div class="btn-row">
+            <a class="btn warn" href="login.html">Open the fake "SBI YONO" login →</a>
+          </div>
+          <p class="watch"><b>Watch for:</b> the bottom banner — "think before you type on 127.0.0.1" — naming the official domain. Nothing you type is read or sent.</p>
+        </div>
+      </section>
+
+      <!-- 4 · DOWNLOADS ---------------------------------------------------- -->
+      <section id="downloads">
+        <div class="card">
+          <h2><span class="num">4</span>Dangerous downloads — Download Guard</h2>
+          <p class="lead">These are the kinds of files sent over WhatsApp and email. They are harmless demo files (no runnable code), but they carry the lure names and types real scams use. Download Guard pauses the risky ones and asks first.</p>
+          <div class="btn-row">
+            <a class="btn danger" href="/dl/apk">SBI_YONO_KYC_Update.apk</a>
+            <a class="btn danger" href="/dl/docm">Salary_Revision_2026.docm</a>
+            <a class="btn danger" href="/dl/html">Secure_Message_HDFC.html</a>
+            <a class="btn warn" href="/dl/pdf">Electricity_Bill_Disconnection.pdf</a>
+            <a class="btn ghost" href="/dl/txt">My_Notes.txt (safe)</a>
+          </div>
+          <p class="watch"><b>Watch for:</b> the APK download <b>pauses</b> partway (it is served slowly on purpose) and the guard page opens. Click <b>Cancel download</b> — the file is removed, even if it had finished. The plain <span class="pill">.txt</span> is allowed through without a prompt.</p>
+        </div>
+      </section>
+
+      <!-- 5 · PHISHING LINKS ----------------------------------------------- -->
+      <section id="links">
+        <div class="card">
+          <h2><span class="num">5</span>Phishing links — full-page warning</h2>
+          <p class="lead">These links use real lookalike tricks. They point to domains that do not exist, so nothing loads — the warning appears <i>before</i> the page, from the on-device check alone.</p>
+          <ul class="steps">
+            <li><a href="http://sbi.co.in.secure-login.click/kyc">sbi.co.in.secure-login.click/kyc</a> — the real domain is <span class="pill">secure-login.click</span>, not SBI.</li>
+            <li><a href="https://paypa1.com/signin">paypa1.com/signin</a> — "paypa1" with a digit one.</li>
+            <li><a href="https://hdfcbank-kyc-update.in/login">hdfcbank-kyc-update.in/login</a> — a brand name stitched into a new domain.</li>
+            <li><a href="https://onlinesbi.sbi/">onlinesbi.sbi</a> — the genuine SBI site, for contrast (no warning).</li>
+          </ul>
+          <p class="watch"><b>Watch for:</b> the orange / red full-page warning listing the evidence, the "Listen in Hindi" button, and the toolbar badge. The real SBI link loads normally.</p>
+        </div>
+      </section>
+
+      <!-- 6 · SCAN TOOLS --------------------------------------------------- -->
+      <section id="scan">
+        <div class="card">
+          <h2><span class="num">6</span>Scan anything yourself</h2>
+          <p class="lead">The Security Center and popup let you check things on demand.</p>
+          <ul class="steps">
+            <li><b>Scan a link:</b> popup → paste any URL → see the verdict and evidence.</li>
+            <li><b>Scan a file:</b> Security Center → add a file from <span class="pill">demo/files/</span>. The APK reads as ~97; the HTML attachment ~75.</li>
+            <li><b>Password check:</b> Security Center → type <span class="pill">password</span> — it is found tens of millions of times, and only the first 5 characters of its hash ever leave your device.</li>
+          </ul>
+          <p class="watch"><b>Watch for:</b> every verdict shows <i>why</i>, and never claims a site is "safe" — only "no known threats".</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="wrap">
+      <p><b>Remember:</b> this is a training range. If you ever hit a real scam — a QR, a call, a fake site — stop and report it.</p>
+      <div class="sos">
+        <span>Cyber crime helpline: 1930</span>
+        <span>cybercrime.gov.in</span>
+      </div>
+    </footer>
+
+    <script src="range.js"></script>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- The title names a bank on purpose: this is not an official bank domain, so Credential Guard warns. -->
+    <title>SBI YONO — Secure Login</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="demo-bar">⚠️ PhishShield Test Range — a fake login for the demo. It is inert: nothing you type is read, stored or sent anywhere.</div>
+
+    <header class="hero" style="background: linear-gradient(135deg, #1e3a8a, #1e40af)">
+      <div class="wrap">
+        <div class="logo">🏦</div>
+        <div>
+          <h1 style="color:#eff6ff">SBI YONO — Secure Login</h1>
+          <p style="color:#bfdbfe">Account verification required · session expiring</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap" style="max-width:440px;padding-top:28px">
+      <div class="card">
+        <p class="lead" style="color:var(--warn)">⏳ Your KYC is pending. Log in within 10 minutes to avoid suspension.</p>
+        <form id="login-form">
+          <label class="field">Customer ID / Username
+            <input name="user" type="text" autocomplete="username" placeholder="Enter your user ID" />
+          </label>
+          <label class="field">Login password
+            <input name="password" type="password" autocomplete="current-password" placeholder="Enter password" />
+          </label>
+          <label class="field">OTP / UPI PIN
+            <input name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" placeholder="6-digit code" />
+          </label>
+          <div class="btn-row">
+            <button class="btn" type="submit">Log in securely</button>
+            <a class="btn ghost" href="index.html">← Back to Test Range</a>
+          </div>
+        </form>
+      </div>
+      <p class="lead" style="margin-top:14px;font-size:13px">Tap the password or OTP box and watch for the PhishShield banner at the bottom of the screen. The genuine site is <b>onlinesbi.sbi</b> / <b>sbi.co.in</b>.</p>
+    </main>
+
+    <script src="range.js"></script>
+  </body>
+</html>

@@ -13,6 +13,27 @@ Everything here uses the harmless sample files in [`demo/`](../demo). The expect
 
 ---
 
+## The one-stop Test Range (recommended)
+
+Instead of opening many different sites, you can run the whole demo from a single local page. Start it with:
+
+```bash
+python scripts/demo-server.py
+```
+
+Then open **`http://127.0.0.1:8098/`** in Chrome with the extension loaded. The **PhishShield Test Range** is a safe, clearly-labelled local site (nothing it shows is real and nothing you type leaves your computer). It has six stations, each telling you what to watch for:
+
+1. **Storefront & ads** — a mock shop with three real ad slots. Toggle the two ad shields and reload; the empty boxes collapse.
+2. **Checkout QR** — the UPI "refund" scam QR, next to a normal shop QR for contrast.
+3. **Fake login** — a page that calls itself a bank; tap the password box and Credential Guard warns.
+4. **Downloads** — the lure files (APK, macro doc, HTML, PDF) plus one safe `.txt`; the APK is served slowly so you can watch Download Guard pause it.
+5. **Phishing links** — lookalike URLs that trigger the full-page warning, with the real SBI site for contrast.
+6. **Scan tools** — prompts for the popup link scan, the file scanner and the leaked-password check.
+
+The feature-by-feature script below still works if you'd rather open each thing separately; the Test Range just puts them all in one window, which also means you verified every station yourself while building. Either way, start the API server too (next section) for the file, QR, password and link checks.
+
+---
+
 ## Before you go on stage (5 minutes)
 
 1. **Build:**
@@ -72,13 +93,13 @@ Everything here uses the harmless sample files in [`demo/`](../demo). The expect
 
 ### 5. Download Guard (40 s)
 
-You need a live download for this. Start the slow demo server, which serves the harmless APK padded to about 3 MB at about 300 KB/s:
+You need a live download for this. The demo server serves the harmless APK padded to about 3 MB at about 300 KB/s, so the pause is visible:
 
 ```bash
-python scripts/demo-download-server.py
+python scripts/demo-server.py
 ```
 
-1. Open `http://127.0.0.1:8098/RTO_E-Challan_2026.apk`.
+1. Open the Test Range at `http://127.0.0.1:8098/` and use station 4, or go straight to `http://127.0.0.1:8098/dl/apk`.
 2. **Expected:** the download **pauses** within the first 100 KB, and the **Download Guard** page opens.
    - *"Download paused · Likely phishing"* and *"Paused at 90 KB of 3.0 MB"*, with the reasons, for example *App named like a traffic challan app*.
    - **Cancel download** is the main button.
@@ -86,7 +107,7 @@ python scripts/demo-download-server.py
 3. Click **Cancel**. The page shows *"Cancelled. The file was not saved."*
 4. **Say:** "It looks only at the name, type and source, and it never opens the file. Ordinary downloads like PDFs, photos and installers from official sites go straight through."
 
-> **Why the slow server?** Chrome can't pause a download whose bytes have all arrived. A 690-byte file over localhost finishes before any extension can pause it; we saw this in real Chrome on 31 Oct 2026. In that case the Download Guard page instead offers **Delete**. Real scam APKs are several MB, so they get paused. In our real-Chrome test the 3 MB download stopped at 90 KB, and Cancel removed the partial file.
+> **What about tiny files?** Chrome can't pause a download whose bytes have all arrived, so a small file (like the 690-byte sample over localhost, or a quick WhatsApp APK) finishes before any extension can pause it. Download Guard still catches it: the guard page opens, and **Cancel** now removes the file even when it already landed on disk — so clicking Cancel always leaves nothing behind. Larger real scam APKs are paused mid-transfer instead. In our real-Chrome test the 3 MB download stopped at 90 KB and Cancel removed the partial file; a 690-byte file finished first and Cancel deleted it.
 
 ### 6. A phishing URL, with registry and breach context (60 s)
 
@@ -103,13 +124,13 @@ python scripts/demo-download-server.py
 
 ### 7. Ads and scam ads (40 s)
 
-Use an ad-heavy news site you've tried beforehand (we verified on `ndtv.com`).
+Use **Test Range station 1** (reliable, you control it) or an ad-heavy news site you've tried beforehand (we verified on `ndtv.com`).
 
-1. Open the site **with the ad toggle off** first, so judges see the ads.
+1. Open the page **with the ad toggle off** first, so judges see the ad boxes.
 2. Open **Tools → Shields**. **Scam-ad shield** is on by default. Turn on **Block ads and trackers**.
-3. Click **Reload this page to apply**. Rules only affect new requests; ads already on the page stay until reload.
-4. Open the popup again. It shows *"N blocked here"* next to each shield.
-5. If empty "Advertisement" boxes remain, turn on **Hide empty ad spaces** in Settings (Chrome asks for site access) and reload.
+3. Turn on **Hide empty ad spaces** too (Chrome asks once for site access).
+4. Click **Reload this page to apply**. Rules only affect new requests; ads already on the page stay until reload.
+5. The ad slots — and the site's own wrapper and "Advertisement" caption around them — collapse, so no blank boxes are left. Open the popup again: it shows *"N blocked here"* next to each shield.
 
 **Say:** "Two toggles, two jobs. The scam-ad shield blocks the pop-under and push networks that deliver fake virus alerts and prize pages, so it's on by default. Mainstream ad and tracker blocking is a privacy and comfort feature, off by default because some sites break. Chrome applies the rules itself; PhishShield never sees your traffic. Ads served by the site itself, like YouTube's, can't be blocked at the network level by any extension of this kind."
 

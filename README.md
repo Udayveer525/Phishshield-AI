@@ -266,7 +266,7 @@ VirusTotal was verified only with mocked responses, because no `VT_API_KEY` was 
 - **Domain age is "unsupported"** for TLDs without RDAP.
 - **Link-shortener destinations are not expanded.**
 - **Chromium only** (Chrome/Edge ≥ 120).
-- **Partly tested in real Chrome.** Tested on 31 Oct 2026: the extension talks to the server, Download Guard pauses and cancels a 3 MB APK, and the ad rules block listed networks on a real news site. Not yet tested there: the warning page, the popup, ad-space hiding and the QR screen capture, which were only tested with a chrome.* stub and unit tests. Very small files (a few KB) finish before Chrome lets any extension pause them, so for those Download Guard offers Delete instead. Run the [demo script](docs/DEMO.md) once before presenting.
+- **Partly tested in real Chrome.** Tested on 31 Oct 2026: the extension talks to the server, Download Guard pauses and cancels a 3 MB APK, and the ad rules block listed networks on a real news site. A later change (1 Nov 2026) makes **Cancel** also remove a download that finished before it could be paused — so very small files (a few KB, which Chrome can't pause) no longer stay on disk — and adds a content script that collapses the site's own wrapper and "Advertisement" caption around a blocked ad slot. That collapser was verified by simulation in a browser preview; it, the download change, the warning page, the popup and the QR screen capture have not yet been re-confirmed in real Chrome. Rebuild, reload the extension, and run the [demo script](docs/DEMO.md) once before presenting.
 
 ## Project layout
 
@@ -277,9 +277,10 @@ src/extension/   MV3 extension: background worker, popup, warning page, Security
                  options, content scripts, ad-blocking rulesets
 src/server/      Optional Node API: Safe Browsing, OpenPhish, VirusTotal, RDAP, HIBP, AI providers, HTTP app
 tests/           Vitest suites
-demo/            Harmless sample QR codes and files for the demo
+demo/            Harmless sample QR codes and files, and site/ — the local "Test Range" demo page
 docs/            Features, demo, architecture, and VirusTotal / HIBP research
-scripts/build.mjs  esbuild bundling, icon generation, secret scan
+scripts/build.mjs       esbuild bundling, icon generation, secret scan
+scripts/demo-server.py  serves the Test Range and the slow demo download on 127.0.0.1:8098
 ```
 
 If you see a scam in India, report it at **cybercrime.gov.in** or call **1930**.

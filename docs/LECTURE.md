@@ -666,7 +666,7 @@ After that:
 
 **Verified in real Chrome:** a 3 MB scam-named APK was paused at 90 KB, and Cancel removed it.
 
-**Limit:** a tiny file (a few KB) can finish before *any* extension can pause it. Then the page offers **Delete** instead.
+**Limit:** a tiny file (a few KB) can finish before *any* extension can pause it — Chrome cannot pause a download whose bytes have all arrived. PhishShield still catches it: the decision page opens, and **Cancel** removes the file even when it already landed on disk (and **Delete** does the same). So declining always leaves nothing behind; the only difference for a tiny file is that it briefly existed before being removed.
 
 ### 8.6 Credential Guard (opt-in)
 
@@ -819,7 +819,7 @@ src/extension/   background.ts, popup/, warning/, center/, download/, options/,
 src/server/      index.ts, app.ts (routes, validation), config.ts,
                  intel/ (safe-browsing, openphish, virustotal, rdap, hibp, service), ai/ (groq, anthropic, prompts, schema)
 tests/           358 tests;   demo/   harmless sample QR codes and files;   docs/   documentation
-scripts/build.mjs  build, icons, secret scan;   scripts/demo-download-server.py  slow download for the demo
+scripts/build.mjs  build, icons, secret scan;   scripts/demo-server.py  local Test Range + slow download for the demo
 ```
 
 That's about 8,200 lines of TypeScript, excluding tests.
@@ -922,7 +922,7 @@ The full script, with expected results, is in [DEMO.md](DEMO.md). The short vers
 2. Reload the extension at `chrome://extensions`.
 3. Run `npm run server` (keys in `.env`).
 4. Open Settings → **Test**.
-5. Open `demo/qr/upi-refund-scam.png` in a tab.
+5. Run `python scripts/demo-server.py` and open the **Test Range** at `http://127.0.0.1:8098/` — it puts all stations below in one window. (Or open `demo/qr/upi-refund-scam.png` directly.)
 
 **The script:**
 
@@ -930,7 +930,7 @@ The full script, with expected results, is in [DEMO.md](DEMO.md). The short vers
 2. **UPI QR (60 s).** Popup → Tools → *Scan a QR code on this screen*. Result: "SENDS ₹4,999… Likely UPI scam". Then scan the normal shop QR: no false alarm.
 3. **Fake APK (60 s).** Security Center → drop `demo/files/SBI_YONO_KYC_Update.apk`. Result: **97/100**, with SMS and accessibility permissions shown. "Only the fingerprint would go to VirusTotal, never the file."
 4. **Phishing attachment (30 s).** `Secure_Message_HDFC.html` scores **75**: a login page plus HTML smuggling, and its phishing link is listed.
-5. **Download Guard (40 s).** Run `python scripts/demo-download-server.py`, then open `http://127.0.0.1:8098/RTO_E-Challan_2026.apk`. The download pauses at around 90 KB, and you click Cancel.
+5. **Download Guard (40 s).** Run `python scripts/demo-server.py`, open the Test Range at `http://127.0.0.1:8098/` and use station 4 (or go straight to `http://127.0.0.1:8098/dl/apk`). The download pauses at around 90 KB, and you click Cancel.
 6. **Phishing URL (60 s).** Visit `http://sbi.co.in.secure-login.click/kyc` and the warning page appears. Show the reasons, **Listen** (Hindi), and **Report to Google**. Then visit `dominos.co.in`: the popup shows the domain is 21 years old and the Domino's India 2021 breach. "That's why a scam caller might know your address."
 7. **Confirmed threat (20 s).** Paste a live URL from `openphish.com/feed.txt` into Scan link. Result: **Confirmed malicious**, naming OpenPhish.
 8. **Scam ads (30 s).** On a news site: Tools → Shields, then **Reload this page to apply**. Show "N blocked here", and Hide empty ad spaces.

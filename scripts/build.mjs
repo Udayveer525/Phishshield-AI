@@ -25,7 +25,7 @@ async function buildExtension() {
     outbase: src,
   });
   // Content scripts registered via chrome.scripting cannot be modules.
-  await build({ ...common, format: 'iife', entryPoints: [join(src, 'content/guard.ts')], outfile: join(out, 'content/guard.js') });
+  await build({ ...common, format: 'iife', entryPoints: [join(src, 'content/guard.ts'), join(src, 'content/adhide.ts')], outdir: join(out, 'content'), outbase: join(src, 'content') });
 
   for (const f of await listFiles(src)) {
     if (/\.(html|css|json)$/.test(f)) {
