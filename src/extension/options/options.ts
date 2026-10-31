@@ -48,15 +48,12 @@ async function testConnection(): Promise<void> {
   render();
 }
 
-async function setGuard(on: boolean): Promise<void> {
-  if (on) {
-    // Broad host access is requested only for this opt-in feature, at the moment the user enables it.
-    const granted = await chrome.permissions.request({ origins: ALL_SITES });
-    if (!granted) return render();
-  } else {
-    await chrome.permissions.remove({ origins: ALL_SITES }).catch(() => false);
-  }
-  await update({ credentialGuard: on });
+// Broad host access is optional: requested when the user turns on a feature that needs it (Credential
+// Guard or ad-space hiding) and given back once neither is on.
+async function setSiteAccessFeature(key: 'credentialGuard' | 'hideAdSpaces', on: boolean): Promise<void> {
+  if (on && !(await chrome.permissions.request({ origins: ALL_SITES }))) return render();
+  await update({ [key]: on });
+  if (!settings.credentialGuard && !settings.hideAdSpaces) await chrome.permissions.remove({ origins: ALL_SITES }).catch(() => false);
 }
 
 function render(): void {
@@ -97,7 +94,7 @@ function render(): void {
       setting(
         'Credential Guard',
         'Warn when you start typing a password, OTP, PIN or card number on a risky page. Needs permission to run on all sites (requested only when you turn this on). It never reads what you type.',
-        toggle(settings.credentialGuard, (v) => void setGuard(v), 'Credential Guard'),
+        toggle(settings.credentialGuard, (v) => void setSiteAccessFeature('credentialGuard', v), 'Credential Guard'),
       ),
       setting('Language', 'Interface and spoken explanations.', lang),
     ),
@@ -119,9 +116,16 @@ function render(): void {
       ),
       setting(
         'Block ads and trackers',
-        'Also block mainstream advertising and tracking networks (Google ads, Taboola, Outbrain, Criteo and others). Off by default because some sites break or ask you to disable ad blockers.',
+        'Also block mainstream advertising and tracking networks (Google ads, Amazon ads, Taboola, Outbrain, Criteo: about 80 networks in all). Off by default because some sites break or ask you to disable ad blockers. Ads served by the site itself (for example YouTube video ads) cannot be blocked this way.',
         toggle(settings.blockAds, (v) => void update({ blockAds: v }), 'Block ads and trackers'),
       ),
+      settings.blockAds
+        ? setting(
+            'Hide empty ad spaces',
+            'Blocked ads can leave empty boxes behind. This adds a small style sheet to pages that collapses known ad containers. Needs permission to run on all sites (requested now, removed when you turn this off). It reads nothing on the page.',
+            toggle(settings.hideAdSpaces, (v) => void setSiteAccessFeature('hideAdSpaces', v), 'Hide empty ad spaces'),
+          )
+        : null,
       setting(
         'File fingerprint lookups',
         'When you scan a file in the Security Center, send its SHA-256 fingerprint (not the file) to your server, which looks it up on VirusTotal.',
@@ -202,7 +206,7 @@ async function init(): Promise<void> {
   settings = await getSettings();
   trusted = await getTrustedDomains();
   // Keep the toggle honest if the user revoked the permission in browser settings.
-  if (settings.credentialGuard && !(await chrome.permissions.contains({ origins: ALL_SITES }))) settings = await saveSettings({ credentialGuard: false });
+  if ((settings.credentialGuard || settings.hideAdSpaces) && !(await chrome.permissions.contains({ origins: ALL_SITES }))) settings = await saveSettings({ credentialGuard: false, hideAdSpaces: false });
   render();
 }
 

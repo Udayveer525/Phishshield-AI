@@ -13,10 +13,13 @@ const out = join(root, 'dist/extension');
 
 async function buildExtension() {
   await rm(out, { recursive: true, force: true });
-  const common = { bundle: true, target: 'chrome120', platform: 'browser', legalComments: 'none', logLevel: 'warning', define: { 'process.env.NODE_ENV': '"production"' } };
+  const common = { bundle: true, minify: true, target: 'chrome120', platform: 'browser', legalComments: 'none', logLevel: 'warning', define: { 'process.env.NODE_ENV': '"production"' } };
   await build({
     ...common,
     format: 'esm',
+    // Shared code goes into chunks, so pages don't each carry their own copy; the QR decoder is loaded on demand.
+    splitting: true,
+    chunkNames: 'chunks/[name]-[hash]',
     entryPoints: ['background.ts', 'popup/popup.ts', 'warning/warning.ts', 'options/options.ts', 'download/download.ts', 'center/center.ts'].map((f) => join(src, f)),
     outdir: out,
     outbase: src,

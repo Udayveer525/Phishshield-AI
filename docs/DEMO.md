@@ -1,5 +1,7 @@
 # Demo script (about 7 minutes)
 
+New to the project? Read [LECTURE.md](LECTURE.md) first. It explains everything from zero.
+
 Everything here uses the harmless sample files in [`demo/`](../demo). The expected results below come from the real engine, and `tests/demo-files.test.ts` checks them on every `npm test`, so the demo can't silently drift.
 
 > **About the sample files.** None of them is malware.
@@ -90,23 +92,26 @@ python scripts/demo-download-server.py
 
 1. Visit `http://sbi.co.in.secure-login.click/kyc`. The warning page appears before the page loads (the domain needn't exist).
    - It explains that the address *starts with* `sbi.co.in` but belongs to `secure-login.click`. **Likely phishing, 74.**
-2. Click **Go back to safety**.
-3. Visit `https://dominos.co.in/` and open the popup.
+2. Point at **Report to Google Safe Browsing** next to Listen: "One click opens Google's report form with this address filled in. Reported sites end up protecting every Chrome user." Don't submit a report for the demo domain.
+3. Click **Go back to safety**.
+4. Visit `https://dominos.co.in/` and open the popup.
    - **No known threats** (never "safe").
    - **Domain age:** *Registered 2005-03-03 (21 years ago)*.
    - **Breach history:** *Domino's India, 2021-03, 2,25,27,655 accounts: names, phone numbers, addresses*, with HIBP attribution.
-4. **Say:** "This isn't a warning; the site is real. It explains why a scam caller might know your address. The breach list is downloaded once a day and matched on our server, so HIBP never learns which sites you visit."
-5. **Confirmed threat.** Copy any URL from `https://openphish.com/feed.txt` into **Scan link**. It shows **Confirmed malicious**, attributed to *OpenPhish Community Feed*. Only verified intel can produce "confirmed".
+5. **Say:** "This isn't a warning; the site is real. It explains why a scam caller might know your address. The breach list is downloaded once a day and matched on our server, so HIBP never learns which sites you visit."
+6. **Confirmed threat.** Copy any URL from `https://openphish.com/feed.txt` into **Scan link**. It shows **Confirmed malicious**, attributed to *OpenPhish Community Feed*. Only verified intel can produce "confirmed".
 
-### 7. Scam ads (20 s)
+### 7. Ads and scam ads (40 s)
 
-Open **Tools → Shields**:
+Use an ad-heavy news site you've tried beforehand (we verified on `ndtv.com`).
 
-- **Scam-ad shield** is on by default.
-- On an ad-heavy streaming or download site, the popup shows *"Blocked on this page: N scam-ad requests"*.
-- Turn on **Block ads and trackers** for mainstream ad networks.
+1. Open the site **with the ad toggle off** first, so judges see the ads.
+2. Open **Tools → Shields**. **Scam-ad shield** is on by default. Turn on **Block ads and trackers**.
+3. Click **Reload this page to apply**. Rules only affect new requests; ads already on the page stay until reload.
+4. Open the popup again. It shows *"N blocked here"* next to each shield.
+5. If empty "Advertisement" boxes remain, turn on **Hide empty ad spaces** in Settings (Chrome asks for site access) and reload.
 
-**Say:** "Chrome applies the rules itself. PhishShield never sees your traffic."
+**Say:** "Two toggles, two jobs. The scam-ad shield blocks the pop-under and push networks that deliver fake virus alerts and prize pages, so it's on by default. Mainstream ad and tracker blocking is a privacy and comfort feature, off by default because some sites break. Chrome applies the rules itself; PhishShield never sees your traffic. Ads served by the site itself, like YouTube's, can't be blocked at the network level by any extension of this kind."
 
 ### 8. A leaked password (30 s)
 

@@ -19,6 +19,8 @@ export interface Settings {
   blockMalvertising: boolean;
   /** Block mainstream ad and tracking networks (off by default: can break some sites). */
   blockAds: boolean;
+  /** Collapse the empty boxes left behind by blocked ads (needs optional site access). */
+  hideAdSpaces: boolean;
   /** Look up file fingerprints (SHA-256) on VirusTotal via the server when scanning files. */
   fileHashLookup: boolean;
 }
@@ -33,6 +35,7 @@ export const DEFAULT_SETTINGS: Settings = {
   downloadGuard: true,
   blockMalvertising: true,
   blockAds: false,
+  hideAdSpaces: false,
   fileHashLookup: true,
 };
 

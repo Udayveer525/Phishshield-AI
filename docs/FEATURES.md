@@ -222,11 +222,21 @@ Where each feature appears:
 | Ruleset | Default | Contents |
 | --- | --- | --- |
 | `malvertising`: **Scam-ad shield** | **On** | 29 pop-under, push and redirect ad networks commonly abused for scams (PopAds, PropellerAds, Adsterra, Monetag, HilltopAds…) |
-| `ads`: **Block ads and trackers** | Off | 31 mainstream ad and tracking domains (DoubleClick, Google ad services, Taboola, Outbrain, Criteo, Hotjar…). Off by default because some sites break. |
+| `ads`: **Block ads and trackers** | Off | 82 mainstream ad, native-ad and tracking domains: DoubleClick, Google ad services, Amazon ads, Taboola (including `tblcontent.com`), Outbrain, Criteo, the big exchanges, Indian networks such as Colombia (`clmbtech.com`), iZooto push and AdRecover, and social-media ad pixels. Off by default because some sites break. |
 
 - **Scope of each rule.** Every rule blocks only **third-party sub-resources** (`domainType: thirdParty`, all resource types except `main_frame`). So the shield never blocks a page you open on purpose, and never breaks a site's own content.
 - **Toggles.** These live in Popup → Tools → Shields and in Settings. They call `declarativeNetRequest.updateEnabledRulesets`, which is re-synced on install, on browser start-up and on any settings change.
 - **"Blocked on this page" counts** use `getMatchedRules({ tabId })`. This works for the active tab through `activeTab`, so the `declarativeNetRequestFeedback` permission isn't needed.
+
+**Hide empty ad spaces** (opt-in, Settings). Blocking an ad request often leaves an empty box with an "Advertisement" label. When this is on, a small style sheet (`content/adhide.css`) collapses well-known ad containers: Google ad slots, Taboola, Outbrain and MGID widgets, AMP ads. It needs the optional "all sites" permission, which is the same one Credential Guard uses. That permission is requested when you turn the feature on and given back when neither feature needs it. The style sheet reads nothing on the page.
+
+**Changes apply to new requests.** Ads already on a page stay until it reloads, so the popup shows **Reload this page to apply** after you flip a shield.
+
+**Verified in real Chrome** (31 Oct 2026, ndtv.com):
+- Requests to listed domains failed: DoubleClick, Taboola, PopAds, Adsterra.
+- A request to an unlisted control loaded normally.
+- No Google ad slots were created on the page.
+- The remaining "Sponsored" widget came from `tblcontent.com`, which is now on the list.
 
 **Honest positioning.** This is a focused, **curated** list, not EasyList. The goal is to block the networks that deliver scams with almost no breakage. DNR allows up to 30,000 static rules per extension, so converting a full community list is a straightforward next step (see §10).
 
@@ -332,7 +342,7 @@ We did **not** add:
 
 | Area | Limit today | Next step |
 | --- | --- | --- |
-| Ad blocking | 60 curated domains | Convert EasyList / EasyPrivacy to DNR (up to 30k static rules), with cosmetic filtering kept out of scope |
+| Ad blocking | 111 curated domains, plus opt-in hiding of known ad containers; ads a site serves from its own domain can't be blocked | Convert EasyList / EasyPrivacy to DNR (up to 30k static rules) and add site-specific hiding rules |
 | File inspection | Static, browser-side; APK manifest read by string search, not a full binary-XML parser | A full AXML parser; DEX string extraction for hard-coded SMS-forwarding numbers |
 | Download Guard | Metadata only, Chromium only | Offer an automatic hash lookup of the finished file |
 | UPI | Can't verify who owns a VPA | Integrate a merchant-verification source if one becomes available |

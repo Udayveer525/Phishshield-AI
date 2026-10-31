@@ -15,6 +15,7 @@ There are no accounts, no analytics and no browsing history.
 
 | Read next | For |
 | --- | --- |
+| [docs/LECTURE.md](docs/LECTURE.md) | **Start here.** The whole product explained from zero: scams, security basics, every feature and setting, how we built it, judge Q&A |
 | [docs/FEATURES.md](docs/FEATURES.md) | **Every feature, how it works and its limits**, plus the competitive edge |
 | [docs/DEMO.md](docs/DEMO.md) | The 7-minute stage demo, with harmless sample files in [`demo/`](demo), and judge Q&A |
 | [docs/HOW-IT-WORKS.md](docs/HOW-IT-WORKS.md) | Stack, architecture, and how to turn on AI |
@@ -34,7 +35,7 @@ There are no accounts, no analytics and no browsing history.
 | **Domain age (RDAP)** | Asks the domain's **official registry** when it was registered. Only the registrable domain is sent. A domain registered days ago adds weight; it never flags a site on its own. |
 | **Breach history (HIBP)** | "This company had a data breach in 2021: names, phones, addresses leaked." Shown as context to explain convincing scam calls. It is never a risk signal. |
 | **Warnings** | A full-page interstitial appears only for `likely_phishing` and `confirmed_malicious`. Lower verdicts show only a toolbar badge. |
-| **Scam-ad shield** (on) / **ad and tracker blocking** (off) | Chrome's `declarativeNetRequest` blocks pop-under, push and redirect ad networks used for prize, tech-support and loan scams. Optionally it also blocks mainstream ad and tracking networks. Third-party sub-resources only. |
+| **Scam-ad shield** (on) / **ad and tracker blocking** (off) / **hide empty ad spaces** (opt-in) | Chrome's `declarativeNetRequest` blocks pop-under, push and redirect ad networks used for prize, tech-support and loan scams. Optionally it also blocks about 80 mainstream ad and tracking networks, and collapses the empty boxes left behind. Third-party sub-resources only. |
 | **Download Guard** | Pauses risky downloads before they finish: APKs from websites (especially with KYC, challan or invitation names), programs disguised as documents, scripts, shortcuts, and files built inside the page (HTML smuggling). You choose Cancel or Keep. |
 | **Credential Guard** (opt-in) | Warns when you focus a password, OTP, PIN or card field on a risky page. It never reads what you type. |
 
@@ -258,14 +259,14 @@ VirusTotal was verified only with mocked responses, because no `VT_API_KEY` was 
 
 - **Heuristics can be evaded.** A phishing page with no brand cues, or one on a compromised legitimate site, gets past them. Reputation lists catch some of these, and only after they're reported.
 - **The interstitial is not a hard block.** A fast page may start loading first.
-- **Ad blocking uses a curated list** of 60 domains, not EasyList.
+- **Ad blocking uses a curated list** of 111 network domains (29 scam-ad and 82 ad/tracker), not EasyList. Ads that a site serves from its own domain, such as YouTube video ads, can't be blocked at the network level.
 - **File inspection is static**, with a 256 MB cap and no sandbox.
 - **Download Guard uses metadata only.**
 - **UPI checks can't see who owns a UPI ID.**
 - **Domain age is "unsupported"** for TLDs without RDAP.
 - **Link-shortener destinations are not expanded.**
 - **Chromium only** (Chrome/Edge ≥ 120).
-- **Partly tested in real Chrome.** Tested on 31 Oct 2026: the extension talks to the server, and Download Guard pauses and cancels a 3 MB APK. Not yet tested there: the warning page, the popup, the ad-blocking toggles and the QR screen capture, which were only tested with a chrome.* stub and unit tests. Very small files (a few KB) finish before Chrome lets any extension pause them, so for those Download Guard offers Delete instead. Run the [demo script](docs/DEMO.md) once before presenting.
+- **Partly tested in real Chrome.** Tested on 31 Oct 2026: the extension talks to the server, Download Guard pauses and cancels a 3 MB APK, and the ad rules block listed networks on a real news site. Not yet tested there: the warning page, the popup, ad-space hiding and the QR screen capture, which were only tested with a chrome.* stub and unit tests. Very small files (a few KB) finish before Chrome lets any extension pause them, so for those Download Guard offers Delete instead. Run the [demo script](docs/DEMO.md) once before presenting.
 
 ## Project layout
 

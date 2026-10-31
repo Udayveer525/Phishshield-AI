@@ -1,0 +1,23 @@
+/* Collapses the containers that ad networks leave behind once their requests are blocked.
+   Only well-known, ad-specific selectors: generic names such as ".ad" or ".adsbox" are avoided
+   because sites use them for real content and as ad-blocker detection bait. */
+ins.adsbygoogle,
+div[id^='div-gpt-ad'],
+div[id^='google_ads_iframe'],
+iframe[id^='google_ads_iframe'],
+iframe[src*='doubleclick.net'],
+iframe[src*='googlesyndication.com'],
+iframe[src*='amazon-adsystem.com'],
+amp-ad,
+amp-embed[type='taboola'],
+amp-embed[type='outbrain'],
+div[id^='taboola-'],
+.trc_related_container,
+.OUTBRAIN,
+.ob-widget,
+div[id^='mgid_'],
+div[data-type='_mgwidget'],
+div[id^='ezoic-pub-ad'],
+div[id^='rc-widget-'] {
+  display: none !important;
+}

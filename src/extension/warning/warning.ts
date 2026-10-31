@@ -22,11 +22,16 @@ const TEXT = {
   proceed: { en: 'Continue to site (not recommended)', hi: 'साइट पर जाएँ (अनुशंसित नहीं)' },
   trust: { en: 'This is a mistake: trust this site', hi: 'यह गलती है: इस साइट पर भरोसा करें' },
   listen: { en: 'Listen', hi: 'सुनें' },
+  report: { en: 'Report to Google Safe Browsing', hi: 'Google Safe Browsing को रिपोर्ट करें' },
   missing: { en: 'This warning has expired. Go back and reload the page to check it again.', hi: 'यह चेतावनी समाप्त हो गई है। पेज दोबारा लोड करके जाँचें।' },
 } as const;
 
 let lang: Lang = 'en';
 let data: { assessment: RiskAssessment; committed: boolean } | undefined;
+
+function reportUrl(url: string): string {
+  return `https://safebrowsing.google.com/safebrowsing/report_phish/?url=${encodeURIComponent(url)}`;
+}
 
 async function tabId(): Promise<number | undefined> {
   return (await chrome.tabs.getCurrent())?.id;
@@ -74,6 +79,8 @@ function render(): void {
       { class: 'w-buttons' },
       el('button', { class: 'btn primary', onclick: goBack, autofocus: true }, icon('back', 16), tr('back')),
       el('button', { class: 'link-btn', onclick: () => speak(a, lang) }, icon('volume', 14), tr('listen')),
+      // Opens Google's own report form with the address filled in; nothing is sent until the user submits it there.
+      el('a', { class: 'link-btn', href: reportUrl(a.url), target: '_blank', rel: 'noopener noreferrer' }, icon('alert', 14), tr('report')),
     ),
     el(
       'p',

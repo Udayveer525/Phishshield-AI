@@ -1,5 +1,3 @@
-import jsQR from 'jsqr';
-
 /**
  * QR decoding with jsQR (Apache-2.0), entirely on the device. Images are drawn to an offscreen
  * canvas; nothing is uploaded. Tries the full image first, then downscaled copies, because jsQR
@@ -11,16 +9,18 @@ const MAX_SIDE = 1600;
 export async function decodeQrFromBlob(blob: Blob): Promise<string | null> {
   const bitmap = await createImageBitmap(blob);
   try {
-    return decodeQrFromBitmap(bitmap);
+    return await decodeQrFromBitmap(bitmap);
   } finally {
     bitmap.close();
   }
 }
 
-export function decodeQrFromBitmap(source: ImageBitmap | HTMLImageElement | HTMLCanvasElement): string | null {
+export async function decodeQrFromBitmap(source: ImageBitmap | HTMLImageElement | HTMLCanvasElement): Promise<string | null> {
   const w = source.width;
   const h = source.height;
   if (!w || !h) return null;
+  // Loaded on first use so the decoder (~250 KB) isn't parsed every time the popup opens.
+  const { default: jsQR } = await import('jsqr');
   const base = Math.min(1, MAX_SIDE / Math.max(w, h));
   for (const scale of [base, base * 0.6, base * 0.35]) {
     const cw = Math.max(1, Math.round(w * scale));

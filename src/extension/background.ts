@@ -173,23 +173,29 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 const GUARD_ID = 'phishshield-guard';
 const ALL_SITES = ['https://*/*', 'http://*/*'];
 
+const ADHIDE_ID = 'phishshield-adhide';
+
+/** Registers or removes the opt-in content scripts (Credential Guard, ad-space hiding) to match settings. */
 async function syncGuard(): Promise<void> {
   const settings = await getSettings();
   const granted = await chrome.permissions.contains({ origins: ALL_SITES });
-  const existing = await chrome.scripting.getRegisteredContentScripts({ ids: [GUARD_ID] });
-  if (settings.credentialGuard && granted) {
-    if (!existing.length) {
-      await chrome.scripting.registerContentScripts([
-        { id: GUARD_ID, matches: ALL_SITES, js: ['content/guard.js'], runAt: 'document_idle', allFrames: false, persistAcrossSessions: true },
-      ]);
-    }
-  } else if (existing.length) {
-    await chrome.scripting.unregisterContentScripts({ ids: [GUARD_ID] });
-  }
+  const existing = new Set((await chrome.scripting.getRegisteredContentScripts({ ids: [GUARD_ID, ADHIDE_ID] })).map((s) => s.id));
+  const wanted: chrome.scripting.RegisteredContentScript[] = [];
+  if (granted && settings.credentialGuard) wanted.push({ id: GUARD_ID, matches: ALL_SITES, js: ['content/guard.js'], runAt: 'document_idle', allFrames: false, persistAcrossSessions: true });
+  if (granted && settings.blockAds && settings.hideAdSpaces) wanted.push({ id: ADHIDE_ID, matches: ALL_SITES, css: ['content/adhide.css'], runAt: 'document_start', allFrames: true, persistAcrossSessions: true });
+  const remove = [...existing].filter((id) => !wanted.some((w) => w.id === id));
+  if (remove.length) await chrome.scripting.unregisterContentScripts({ ids: remove });
+  const add = wanted.filter((w) => !existing.has(w.id));
+  if (add.length) await chrome.scripting.registerContentScripts(add);
 }
 
-chrome.runtime.onInstalled.addListener(() => void syncGuard().then(syncRulesets));
-chrome.runtime.onStartup.addListener(() => void syncGuard().then(syncRulesets));
+// Each sync runs on its own so a failure in one (e.g. a revoked permission) never skips the other.
+async function syncAll(): Promise<void> {
+  await Promise.allSettled([syncGuard(), syncRulesets()]);
+}
+
+chrome.runtime.onInstalled.addListener(() => void syncAll());
+chrome.runtime.onStartup.addListener(() => void syncAll());
 chrome.permissions.onRemoved.addListener(() => void syncGuard());
 
 async function guardCheck(sender: chrome.runtime.MessageSender, title: string): Promise<GuardInfo> {
@@ -369,8 +375,7 @@ chrome.runtime.onMessage.addListener((msg: BgRequest, sender, sendResponse: (r: 
       }
       case 'settings-changed':
         if (!fromExtensionPage) return { ok: false, error: 'forbidden' };
-        await syncGuard();
-        await syncRulesets();
+        await syncAll();
         return { ok: true };
       case 'list-downloads':
         if (!fromExtensionPage) return { ok: false, error: 'forbidden' };

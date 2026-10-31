@@ -39,7 +39,7 @@ const state = {
     done: false,
     upi: [] as UpiAssessment[],
   },
-  tools: { qrBusy: false, qr: null as QrAnalysis | null, qrError: '' },
+  tools: { qrBusy: false, qr: null as QrAnalysis | null, qrError: '', shieldsChanged: false },
   /** Requests blocked on the current tab by the static rulesets (null = unknown). */
   blocked: null as { malvertising: number; ads: number } | null,
 };
@@ -271,6 +271,7 @@ function renderTools(main: HTMLElement): void {
   const lang = state.lang;
   const tl = state.tools;
   const s = state.settings;
+  const tab = state.tab;
   const center = (hash: string) => () => void chrome.tabs.create({ url: chrome.runtime.getURL(`center/center.html#${hash}`) });
   const shield = (label: string, on: boolean, key: 'blockMalvertising' | 'blockAds', count?: number) =>
     el(
@@ -285,6 +286,7 @@ function renderTools(main: HTMLElement): void {
         onchange: async (e: Event) => {
           state.settings = await saveSettings({ [key]: (e.target as HTMLInputElement).checked });
           await sendBg({ type: 'settings-changed' }).catch(() => undefined);
+          tl.shieldsChanged = true;
           render();
         },
       }),
@@ -319,6 +321,11 @@ function renderTools(main: HTMLElement): void {
       el('h3', {}, 'Shields'),
       shield('Scam-ad shield', !!s?.blockMalvertising, 'blockMalvertising', state.blocked?.malvertising),
       shield('Block ads & trackers', !!s?.blockAds, 'blockAds', state.blocked?.ads),
+      // Rules apply to new requests only, so ads already on the page stay until it reloads.
+      tl.shieldsChanged && tab ? el('button', { class: 'btn wide', onclick: () => void chrome.tabs.reload(tab.id).then(() => window.close()) }, 'Reload this page to apply') : null,
+      s?.blockAds && !s.hideAdSpaces
+        ? el('button', { class: 'link-btn small', onclick: () => void chrome.runtime.openOptionsPage() }, 'Empty ad boxes left behind? Turn on “Hide empty ad spaces” in Settings')
+        : null,
     ),
   );
 }

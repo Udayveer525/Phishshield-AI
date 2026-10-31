@@ -104,6 +104,18 @@ describe('network blocking rulesets', () => {
     for (const d of load('ads').rules.flatMap((r) => r.condition.requestDomains)) expect(a.has(d)).toBe(false);
   });
 
+  it('covers the native-ad and ad-exchange domains seen on Indian news sites', () => {
+    const ads = new Set(load('ads').rules.flatMap((r) => r.condition.requestDomains));
+    for (const d of ['doubleclick.net', 'googlesyndication.com', 'amazon-adsystem.com', 'taboola.com', 'tblcontent.com', 'outbrain.com', 'clmbtech.com', 'izooto.com']) expect(ads.has(d), d).toBe(true);
+    expect(ads.size).toBeGreaterThanOrEqual(80);
+  });
+
+  it('hides only ad-specific containers (no generic class names that break sites or trip ad-block detection)', () => {
+    const css = readFileSync('src/extension/content/adhide.css', 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+    expect(css).toMatch(/display:\s*none !important/);
+    for (const generic of [/(^|[\s,])\.ad[\s,{]/, /\.adsbox/, /\[class\*=['"]?ad['"]?\]/]) expect(css).not.toMatch(generic);
+  });
+
   it('requests only the permissions it uses', () => {
     expect(manifest.permissions.sort()).toEqual(['activeTab', 'declarativeNetRequest', 'downloads', 'scripting', 'storage', 'webNavigation']);
     expect(manifest.host_permissions).toBeUndefined();
